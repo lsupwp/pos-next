@@ -1,27 +1,46 @@
+# # Stage 1: Build Stage
+# FROM node:22.15.0 AS builder
+
+# WORKDIR /app
+
+# # Copy และติดตั้ง dependencies
+# COPY package*.json ./
+# RUN npm install
+
+# # Copy source code ทั้งหมด
+# COPY . .
+
+# # Disable Next.js telemetry
+# ENV NEXT_TELEMETRY_DISABLED=1
+
+# # Build Next.js app
+# RUN npm run build
+
+# # Stage 2: Production Image (เล็ก สะอาด)
 # FROM node:22.15.0
 
 # WORKDIR /app
 
-# # ติดตั้ง dependencies ก่อน
+# # Copy only production dependencies
 # COPY package*.json ./
-# RUN npm install
+# RUN npm install --omit=dev
 
-# # คัดลอกไฟล์ config ที่อยู่ใน context (pos-next/next/)
-# COPY next.config.mjs ./
-# COPY postcss.config.mjs ./
-# # (ถ้ามี tailwind.config.js ใน pos-next/next/ ให้เพิ่มบรรทัดนี้)
-# # COPY tailwind.config.js ./
+# # Copy built app จาก builder stage
+# COPY --from=builder /app/.next ./.next
+# COPY --from=builder /app/public ./public
+# COPY --from=builder /app/next.config.mjs ./
+# COPY --from=builder /app/postcss.config.mjs ./
+# # COPY --from=builder /app/tailwind.config.js ./ # ถ้ามี
+# COPY --from=builder /app/package.json ./
+# COPY --from=builder /app/package-lock.json ./
 
-# # คัดลอก source code ทั้งหมดจาก context (pos-next/next/)
-# COPY . .
-
-# ENV NEXT_TELEMETRY_DISABLED 1
-
-# RUN npm run build
+# # Disable telemetry
+# ENV NEXT_TELEMETRY_DISABLED=1
 
 # EXPOSE 3000
 
 # CMD ["npm", "start"]
+
 
 
 
