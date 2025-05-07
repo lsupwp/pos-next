@@ -46,7 +46,7 @@ services:
       - "3000:3000"
     environment:
       DATABASE_HOST: db
-      DATABASE_USER: lsupwp
+      DATABASE_USER: root
       DATABASE_PASSWORD: "P@ssword"
       DATABASE_NAME: pos_next
     depends_on:
