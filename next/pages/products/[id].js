@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import Navbar from "@/components/Navbar";
 import ModalUpdatePromotion from "@/components/products/ModalUpdatePromotion";
 import ModalSure from "@/components/products/ModalSure";
-import Loading from "@/components/Loading";
 
 const isNonEmpty = (value) => typeof value === 'string' && value.trim() !== "";
 

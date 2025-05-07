@@ -1,8 +1,6 @@
 import { useEffect, useRef } from "react"
 
-const ModalSure = (props) => {
-
-    const { open, onClose, onDelete } = props
+const ModalSure = ({ open, onClose, onDelete }) => {
 
     const dialogRef = useRef(null)
 
