@@ -55,10 +55,6 @@ const ProductDetail = () => {
     const router = useRouter();
     const { id } = router.query;
 
-    if(router.isFallback){
-        return <Loading/>
-    }
-
     const [productDetail, setProductDetail] = useState({
         barcode: "",
         name: "",
