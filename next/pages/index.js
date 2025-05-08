@@ -21,22 +21,23 @@ const Home = () => {
     };
 
     const handleQuantityChange = (e, barcode) => {
-        const value = e.target.value;
-
-        if (isNaN(value) || value < 1) return
-
+        const value = parseFloat(e.target.value);
+    
+        if (isNaN(value) || value < 0) return;
+    
         const product = productSales.find(product => product.barcode === barcode);
-        if (!product) return
-
+        if (!product) return;
+    
         const newProduct = {
             ...product,
             amount: value,
             total_price: calculatePrice(product, value),
             total_profit: calculateProfit(product, value)
-        }
-
+        };
+    
         setProductSales(prev => prev.map(product => product.barcode === barcode ? newProduct : product));
     }
+    
 
     const handleKeydown = (e) => {
         if (!products) return
@@ -162,7 +163,8 @@ const Home = () => {
                                             <input
                                                 className="input input-bordered w-20"
                                                 type="number"
-                                                min={1}
+                                                min={0}
+                                                step="any"   // <== เพิ่มตรงนี้เพื่อให้พิมพ์ทศนิยมได้
                                                 value={product.amount}
                                                 onChange={(e) => handleQuantityChange(e, product.barcode)}
                                                 onKeyDown={(e) => handleQuantityChange(e, product.barcode)}
@@ -193,7 +195,7 @@ const Home = () => {
                     products={productSales}
                     total_sales={productSales.reduce((acc, product) => acc + product.total_price, 0).toFixed(2)}
                     total_profit={productSales.reduce((acc, product) => acc + product.total_profit, 0).toFixed(2)}
-                    onReload={()=>window.location.reload()}
+                    onReload={() => window.location.reload()}
                 />}
         </>
     )

@@ -44,8 +44,8 @@ const updateProductPromotion = async (req, res) => {
 
         const parsePrice = parseFloat(price)
         const parseCost = parseFloat(cost)
-        const newQuantity = Math.floor(quantity)
-        const newSaledQuantity = Math.floor(saled_quantity)
+        const newQuantity = parseFloat(quantity)
+        const newSaledQuantity = parseFloat(saled_quantity)
 
         if (parsePrice <= parseCost) {
             return res.json({ status: "error", message: "ราคาสินค้าต้องมากกว่าราคาต้นทุน" })

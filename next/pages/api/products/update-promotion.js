@@ -14,7 +14,7 @@ const updatePromotion = async (req, res) => {
             return res.json({ status: "error", message: "โปรดกรอกราคาสินค้าให้ถูกต้อง" })
         }
 
-        const newQuantity = Math.floor(quantity)
+        const newQuantity = parseFloat(quantity)
         const parsePrice = parseFloat(price)
 
         try {

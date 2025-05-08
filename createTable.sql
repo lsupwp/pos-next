@@ -4,15 +4,15 @@ CREATE TABLE IF NOT EXISTS products (
     name VARCHAR(255) NOT NULL,
     price DECIMAL(10,2) NOT NULL,
     cost DECIMAL(10,2) NOT NULL,
-    quantity INT(255) NOT NULL,
-    saled_quantity INT(255) NOT NULL DEFAULT 0,
+    quantity DECIMAL(10,2) NOT NULL,
+    saled_quantity DECIMAL(10,2) NOT NULL DEFAULT 0,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS promotions (
     id INT(255) NOT NULL AUTO_INCREMENT,
     product_barcode VARCHAR(255) NOT NULL,
-    quantity INT(255) NOT NULL,
+    quantity DECIMAL(10,2) NOT NULL,
     price DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (product_barcode) REFERENCES products(barcode)
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS sold_items (
     id INT(255) NOT NULL AUTO_INCREMENT,
     sales_schedule_id INT(255) NOT NULL,
     product_barcode VARCHAR(255) NOT NULL,
-    quantity INT(255) NOT NULL,
+    quantity DECIMAL(10,2) NOT NULL,
     total_sales DECIMAL(10,2) NOT NULL,
     total_profit DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (id),

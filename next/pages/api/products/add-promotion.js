@@ -29,7 +29,7 @@ const addPromotion = async (req, res) => {
                 return res.json({ status: "error", message: "สินค้ามีโปรโมชั่นอยู่แล้ว" })
             }
 
-            const newQuantity = Math.floor(quantity)
+            const newQuantity = parseFloat(quantity)
             const parsePrice = parseFloat(price)
 
             await db.query("INSERT INTO promotions (product_barcode, quantity, price) VALUES (?, ?, ?)", [barcode, newQuantity, parsePrice])

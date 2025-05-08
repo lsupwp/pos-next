@@ -1,43 +1,72 @@
 import db from "@/lib/database"
 
-function isValidProduct(product) {
-    return product.every(p => {
-        const isBarcodeValid = typeof p.barcode === 'string' && p.barcode.trim() !== "";
-        const isNameValid = typeof p.name === 'string' && p.name.trim() !== "";
-        const isPriceValid = typeof p.price === 'number' && p.price > 0 && p.price > p.cost;
-        const isCostValid = typeof p.cost === 'number' && p.cost > 0;
-        const isQuantityValid = typeof p.quantity === "number";
-        const isSaledQuantity = typeof p.saled_quantity === "number";
-        const isPromotionQuantityValid = (typeof p.promotion_quantity === 'number' || p.promotion_quantity === null);
-        const isPromotionPriceValid = (typeof p.promotion_price === 'number' || p.promotion_price === null);
-        const isTotalPriceValid = typeof p.total_price === 'number' && p.total_price > 0;
-        const isTatalProfitValid = typeof p.total_profit === 'number' && p.total_profit > 0;
-        const isAmountValid = typeof p.amount === 'number' && p.amount > 0;
+function isValidProduct(products, res) {
+    if (!products || products.length === 0) {
+        return res.json({ status: "error", message: "ไม่พบสินค้าที่ต้องการซื้อ" });
+    }
 
-        return isBarcodeValid &&
-            isNameValid &&
-            isPriceValid &&
-            isCostValid &&
-            isQuantityValid &&
-            isSaledQuantity &&
-            isPromotionQuantityValid &&
-            isPromotionPriceValid &&
-            isTotalPriceValid &&
-            isTatalProfitValid &&
-            isAmountValid;
-    });
+    for (let p of products) {
+        if (typeof p.barcode !== 'string' || p.barcode.trim() === "") {
+            return res.json({ status: "error", message: "รหัสบาร์โค้ดของสินค้าผิดพลาด" });
+        }
+
+        if (typeof p.name !== 'string' || p.name.trim() === "") {
+            return res.json({ status: "error", message: "ชื่อสินค้าผิดพลาด" });
+        }
+
+        if (isNaN(p.cost) || p.cost <= 0) {
+            return res.json({ status: "error", message: "ต้นทุนสินค้าต้องมากกว่า 0" });
+        }
+
+        if (isNaN(p.price) || p.price <= 0 || p.price <= p.cost) {
+            return res.json({ status: "error", message: "ราคาสินค้าต้องมากกว่าต้นทุนและมากกว่า 0" });
+        }
+
+        if (isNaN(p.quantity)) {
+            return res.json({ status: "error", message: "จำนวนสินค้าผิดพลาด" });
+        }
+
+        if (isNaN(p.saled_quantity)) {
+            return res.json({ status: "error", message: "จำนวนสินค้าที่ขายผิดพลาด" });
+        }
+
+        if (!(isNaN(p.promotion_quantity) === false || p.promotion_quantity === null)) {
+            return res.json({ status: "error", message: "จำนวนโปรโมชันของสินค้าผิดพลาด" });
+        }
+
+        if (!(isNaN(p.promotion_price) === false || p.promotion_price === null)) {
+            return res.json({ status: "error", message: "ราคาโปรโมชันของสินค้าผิดพลาด" });
+        }
+
+        if (isNaN(p.total_price) || p.total_price <= 0) {
+            return res.json({ status: "error", message: "ราคารวมของสินค้าต้องมากกว่า 0" });
+        }
+
+        if (isNaN(p.total_profit) || p.total_profit <= 0) {
+            return res.json({ status: "error", message: "กำไรรวมของสินค้าต้องมากกว่า 0" });
+        }
+
+        if (isNaN(p.amount) || p.amount <= 0) {
+            return res.json({ status: "error", message: "ยอดรวมของสินค้าต้องมากกว่า 0" });
+        }
+    }
+
+    return true;
 }
+
 
 
 const paybill = async (req, res) => {
     if (req.method === "POST") {
         const { products, total_sales, total_profit, amount_received, change_amount } = req.body;
 
+        console.log(products);
+
         if (!products || products.length === 0) {
             return res.json({ status: "error", message: "ไม่พบสินค้าที่ต้องการซื้อ" })
         }
 
-        if (!isValidProduct(products)) {
+        if (!isValidProduct(products, res)) {
             return res.json({ status: "error", message: "สินค้าไม่ถูกต้อง" })
         }
 
@@ -90,7 +119,7 @@ const paybill = async (req, res) => {
                 )
 
                 const newQuantity = product.quantity - product.amount;
-                const newSaledQuantity = product.saled_quantity + product.amount;
+                const newSaledQuantity = parseFloat(product.saled_quantity) + parseFloat(product.amount);
 
                 await db.query(
                     "UPDATE products SET quantity = ?, saled_quantity = ? WHERE barcode = ?",

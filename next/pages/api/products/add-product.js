@@ -34,7 +34,7 @@ const addProduct = async (req, res) => {
     
         const parsePrice = parseFloat(price)
         const parseCost = parseFloat(cost)
-        const newQuantity = Math.floor(quantity)
+        const newQuantity = parseFloat(quantity)
     
         const [rows] = await db.query("SELECT * FROM products WHERE barcode = ? OR name = ?", [barcode, name])
     
@@ -60,7 +60,7 @@ const addProduct = async (req, res) => {
                 return res.json({ status: "error", message: "กรุณาใส่ราคาโปรโมชั่นของสินค้าให้ถูกต้อง" })
             }
     
-            const promotionQuantity = Math.floor(promotion_quantity)
+            const promotionQuantity = parseFloat(promotion_quantity)
             const parsePromotionPrice = parseFloat(promotion_price)
     
             try {

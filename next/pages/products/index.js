@@ -17,6 +17,22 @@ const Products = () => {
         return product.name.toLowerCase().includes(searchKey.toLowerCase()) || product.barcode.toLowerCase().includes(searchKey.toLowerCase())
     })
 
+    const handleDelete = async (name, barcode)=>{
+        if(confirm("ต้องการลบ " + name + " ใช่หรือไม่")){
+            try{
+                const response = await axios.post("/api/products/delete-product", {barcode:barcode});
+                const result = response.data;
+                if(result.status === "error"){
+                    alert(result.message);
+                    return;
+                }
+                window.location.reload();
+            }catch (err) {
+                alert("Internal server error")
+            }
+        }
+    }
+
     useEffect(() => {
         const fetchProducts = async () => {
             setIsLoading(true)
@@ -88,7 +104,8 @@ const Products = () => {
                                                 <td>{product.price}</td>
                                                 <td>{product.cost}</td>
                                                 <td>{product.quantity}</td>
-                                                <td><Link href={`/products/${product.id}`}><button className="btn btn-info">จัดการสินค้า</button></Link></td>
+                                                <td><button onClick={()=>{handleDelete(product.name, product.barcode)}} className="btn btn-error">ลบสินค้า</button></td>
+                                                <td><Link href={`/products/${product.id}`} asChild><button className="btn btn-info">จัดการสินค้า</button></Link></td>
                                             </tr>
                                         ))}
                                     </tbody>

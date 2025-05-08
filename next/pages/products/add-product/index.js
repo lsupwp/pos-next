@@ -49,7 +49,7 @@ const AddProduct = () => {
             name: name,
             price: parseFloat(price),
             cost: parseFloat(cost),
-            quantity: Math.floor(quantity)
+            quantity: parseFloat(quantity)
         }
 
         setError("")

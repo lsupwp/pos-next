@@ -32,7 +32,7 @@ const ModalUpdatePromotion = (props) => {
             return
         }
 
-        const newQuantity = Math.floor(promotionQuantity)
+        const newQuantity = parseFloat(promotionQuantity)
         const parsePrice = parseFloat(promotionPrice)
 
         const newPromotion = {
