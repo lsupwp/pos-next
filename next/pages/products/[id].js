@@ -13,12 +13,18 @@ const parsePositiveNumber = (value) => {
     return !isNaN(num) && num > 0 ? num : null;
 };
 
+const parsePositiveNumberCost = (value) => {
+    const num = Number(value);
+    return !isNaN(num) && num >= 0 ? num : null;
+};
+
 const validateMainDetails = (product) => {
+    console.log(product)
     return (
         isNonEmpty(product.barcode) &&
         isNonEmpty(product.name) &&
         parsePositiveNumber(product.price) !== null &&
-        parsePositiveNumber(product.cost) !== null &&
+        parsePositiveNumberCost(product.cost) !== null &&
         parsePositiveNumber(product.quantity) !== null &&
         (!isNaN(product.saled_quantity) && product.saled_quantity >= 0 ? product.saled_quantity : null) !== null
     );
