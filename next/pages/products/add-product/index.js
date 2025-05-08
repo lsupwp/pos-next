@@ -31,8 +31,8 @@ const AddProduct = () => {
             setError("ราคาต้องเป็นตัวเลขที่มากกว่า 0")  
             return
         }
-        if (isNaN(cost) || cost <= 0) {
-            setError("ต้นทุนต้องเป็นตัวเลขที่มากกว่า 0")  
+        if (isNaN(cost) || cost < 0) {
+            setError("ต้นทุนต้องเป็นตัวเลขที่มากกว่า -1")  
             return
         }
         if (isNaN(quantity) || quantity <= 0) {

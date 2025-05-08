@@ -20,7 +20,7 @@ const addProduct = async (req, res) => {
             return res.json({ status: "error", message: "โปรกกรอกราคาสินค่าให้ถูกต้อง" })
         }
     
-        if (isNaN(cost) || cost <= 0) {
+        if (isNaN(cost) || cost < 0) {
             return res.json({ status: "error", message: "โปรกกรอกต้นทุนสินค้าให้ถูกต้อง" })
         }
     
