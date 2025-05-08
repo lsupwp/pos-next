@@ -86,7 +86,6 @@ const ProductDetail = () => {
                 setError(result.message);
                 return;
             }
-
             setError("")
             window.location.reload(true);
         } catch (err) {
@@ -167,24 +166,24 @@ const ProductDetail = () => {
     }
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        (async () => {
             try {
-                const response = await axios.get(`/api/products/get-detail-product?id=${id}`)
-                const result = response.data.product?.[0];
+                const { data } = await axios.get(`/api/products/get-detail-product?id=${id}`);
+                const result = data.product?.[0] ?? null;
+    
                 if (!result) {
                     setError("Product not found");
                     return;
                 }
-                setError("")
+    
                 setProductDetail(result);
                 setOriginalDetail({ ...result });
+                setError("");
             } catch (err) {
-                setError("Internal server error")
+                setError(axios.isAxiosError(err) ? "Failed to fetch product" : "Internal server error");
             }
-        }
-
-        fetchProducts()
-    }, [id])
+        })();
+    }, [id]);
 
     const normalize = (obj = {}) => {
         return Object.keys(obj).reduce((acc, key) => {
