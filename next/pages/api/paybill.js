@@ -14,8 +14,8 @@ function isValidProduct(products, res) {
             return res.json({ status: "error", message: "ชื่อสินค้าผิดพลาด" });
         }
 
-        if (isNaN(p.cost) || p.cost <= 0) {
-            return res.json({ status: "error", message: "ต้นทุนสินค้าต้องมากกว่า 0" });
+        if (isNaN(p.cost) || p.cost < 0) {
+            return res.json({ status: "error", message: "ต้นทุนสินค้าต้องมากกว่า -1" });
         }
 
         if (isNaN(p.price) || p.price <= 0 || p.price <= p.cost) {

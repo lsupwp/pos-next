@@ -18,7 +18,7 @@ const updateProduct = async (req, res) => {
         if (isNaN(price) || price <= 0) {
             return res.json({ status: "error", message: "โปรดกรอกราคาสินค้าให้ถูกต้อง" })
         }
-        if (isNaN(cost) || cost <= 0) {
+        if (isNaN(cost) || cost < 0) {
             return res.json({ status: "error", message: "โปรดกรอกต้นทุนสินค้าให้ถูกต้อง" })
         }
         if (isNaN(quantity) || quantity <= 0) {
