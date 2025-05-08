@@ -34,6 +34,7 @@ const Home = () => {
             total_price: calculatePrice(product, value),
             total_profit: calculateProfit(product, value)
         };
+        console.log(newProduct);
     
         setProductSales(prev => prev.map(product => product.barcode === barcode ? newProduct : product));
     }

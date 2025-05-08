@@ -21,8 +21,6 @@ const ModalAddPromotion = (props) => {
                 setError(response.data.message)
                 return
             }
-
-            alert(response.data.message);
             clearData();
             dialogRef.current.close()
         }catch (err) {
