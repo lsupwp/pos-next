@@ -4,6 +4,7 @@ import axios from "axios";
 const PayBill = ({ open, onClose, products, total_sales, total_profit, onReload }) => {
 
     const dialogRef = useRef(null)
+    const amountReceviedRef = useRef(null);
 
     const [data, setData] = useState({
         products: products,
@@ -43,6 +44,10 @@ const PayBill = ({ open, onClose, products, total_sales, total_profit, onReload 
 
         if (open && !dialog.open) {
             dialog.showModal();
+            setTimeout(() => {
+                amountReceviedRef.current?.focus();
+            }, 0);
+
         }
         if (!open && dialog.open) {
             dialog.close();
@@ -58,6 +63,7 @@ const PayBill = ({ open, onClose, products, total_sales, total_profit, onReload 
             dialog.removeEventListener('close', handleClose);
         }
     }, [open, onClose]);
+
 
     return (
         <>
@@ -87,8 +93,9 @@ const PayBill = ({ open, onClose, products, total_sales, total_profit, onReload 
                         </div>
                         <div className="flex flex-col justify-center items-center gap-2 w-full">
                             <input
+                                ref={amountReceviedRef}
                                 type="number"
-                                placeholder="Type here"
+                                placeholder="กรอกยอกเงินที่รับมา"
                                 value={data.amount_received}
                                 onChange={(e) => {
                                     setData({

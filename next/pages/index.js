@@ -11,6 +11,7 @@ import PayBill from "@/components/home/PayBill";
 const Home = () => {
 
     const inputRef = useRef(null);
+    const submitRef = useRef(null);
 
     const [products, setProducts] = useState([]);
     const [productSales, setProductSales] = useState([]);
@@ -118,6 +119,17 @@ const Home = () => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [inputRef]);
 
+        useEffect(() => {
+        const handleSumbitKey = (e) => {
+            if (e.ctrlKey && e.key === "Enter") {
+                submitRef.current?.click();
+            }
+        }
+
+        window.addEventListener("keydown", handleSumbitKey);
+        return () => window.removeEventListener("keydown", handleSumbitKey);
+    }, [submitRef])
+
     return (
         <>
             <Navbar />
@@ -132,7 +144,7 @@ const Home = () => {
                             <input
                                 ref={inputRef}
                                 type="text"
-                                placeholder="Type here"
+                                placeholder="บาร์โคด"
                                 onKeyDown={handleKeydown}
                                 className="input w-full"
                                 autoFocus
@@ -183,7 +195,7 @@ const Home = () => {
                     <div className="flex flex-row items-center justify-around w-full p-4 h-1/8">
                         <h1 className="text-2xl font-bold">กำไรทั้งหมด: {productSales.reduce((acc, product) => acc + product.total_profit, 0).toFixed(2)} บาท</h1>
                         <h1 className="text-2xl font-bold text-green-500">รวมทั้งหมด: {productSales.reduce((acc, product) => acc + product.total_price, 0).toFixed(2)} บาท</h1>
-                        <button className="btn btn-primary mt-4" onClick={() => setIsModalOpen(true)}>ชำระเงิน</button>
+                        <button ref={submitRef} className="btn btn-primary mt-4" onClick={() => setIsModalOpen(true)}>ชำระเงิน</button>
                     </div>
                 </div>
             )}

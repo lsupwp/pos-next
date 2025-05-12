@@ -2,9 +2,11 @@ import { useRef, useEffect, useState } from "react"
 import axios from "axios"
 
 const ModalAddPromotion = (props) => {
-    const { productDetail, open, onClose , clearData} = props
+    const { productDetail, open, onClose, clearData } = props
 
     const dialogRef = useRef(null)
+    const havePromotionKey = useRef(null);
+    const notHavePromotionKay = useRef(null)
 
     const [havePromotion, setHavePromotion] = useState(false)
     const [promotionQuantity, setPromotionQuantity] = useState("")
@@ -13,30 +15,30 @@ const ModalAddPromotion = (props) => {
 
     const handleNotHavePromotion = async (e) => {
         e.preventDefault()
-        if(!productDetail) return
+        if (!productDetail) return
 
-        try{
+        try {
             const response = await axios.post(`/api/products/add-product`, productDetail)
-            if(response.data.status === "error"){
+            if (response.data.status === "error") {
                 setError(response.data.message)
                 return
             }
             clearData();
             dialogRef.current.close()
-        }catch (err) {
+        } catch (err) {
             alert("Internal server error!")
         }
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if(!productDetail) return
+        if (!productDetail) return
 
-        if(isNaN(promotionQuantity) || promotionQuantity <= 0){
+        if (isNaN(promotionQuantity) || promotionQuantity <= 0) {
             setError("จำนวนที่จะจัดโปรโมชั่นไม่ถูกต้อง")
             return
         }
-        if(isNaN(promotionPrice) || promotionPrice <= 0){
+        if (isNaN(promotionPrice) || promotionPrice <= 0) {
             setError("ราคาที่จะจัดโปรโมชั่นไม่ถูกต้อง")
             return
         }
@@ -47,22 +49,21 @@ const ModalAddPromotion = (props) => {
             promotion_quantity: promotionQuantity,
             promotion_price: promotionPrice
         }
-        try{
+        try {
             const response = await axios.post("/api/products/add-product", newProductDetail)
-            if(response.data.status === "error"){
+            if (response.data.status === "error") {
                 setError(response.data.message)
                 return
             }
 
-            alert(response.data.message);
             clearData();
             dialogRef.current.close()
-        }catch (err){
+        } catch (err) {
             alert("Internal server error!!")
         }
     }
 
-    const clearForm = ()=>{
+    const clearForm = () => {
         setPromotionQuantity("")
         setPromotionPrice("")
         setError("")
@@ -71,7 +72,7 @@ const ModalAddPromotion = (props) => {
     useEffect(() => {
         const dialog = dialogRef.current;
         if (!dialog) return;
-    
+
         // เปิด / ปิด dialog ตาม open prop
         if (open && !dialog.open) {
             dialog.showModal();
@@ -79,30 +80,44 @@ const ModalAddPromotion = (props) => {
         if (!open && dialog.open) {
             dialog.close();
         }
-    
+
         // ฟัง event ปิด dialog แล้วเรียก onClose
         const handleClose = () => {
             setHavePromotion(false)
             clearForm();
             onClose();
         }
-    
+
         dialog.addEventListener('close', handleClose);
-    
+
         return () => {
             dialog.removeEventListener('close', handleClose);
         }
     }, [open, onClose]);
-    
 
-    useEffect(()=>{
-        if(!productDetail){
+
+    useEffect(() => {
+        if (!productDetail) {
             setError("ไม่พบข้อมูลสินค้า")
             return
-        }else{
+        } else {
             setError("")
         }
     }, [productDetail])
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.ctrlKey && e.key.toLowerCase() === "x") {
+                notHavePromotionKay.current?.click();
+                return;
+            }
+            if (e.ctrlKey && e.key.toLowerCase() === "c") {
+                havePromotionKey.current?.click();
+            }
+        }
+            window.addEventListener('keydown', handleKeyDown);
+            return () => window.removeEventListener('keydown', handleKeyDown);
+        }, [])
 
     return (
         <dialog ref={dialogRef} id="promotion" className="modal">
@@ -120,15 +135,15 @@ const ModalAddPromotion = (props) => {
                 <div className="flex flex-col items-center justify-center mb-7">
                     <h1 className="text-2xl mb-4">สินค้านี้มีโปรโมชั่นไหม</h1>
                     <div>
-                        <button className="btn btn-error mr-4" onClick={handleNotHavePromotion}>ไม่มีโปรโมชั่น</button>
-                        <button className="btn btn-success" onClick={() => setHavePromotion(true)}>มีโปรโมชั่น</button>
+                        <button ref={notHavePromotionKay} className="btn btn-error mr-4" onClick={handleNotHavePromotion}>ไม่มีโปรโมชั่น</button>
+                        <button ref={havePromotionKey} className="btn btn-success" onClick={() => setHavePromotion(true)}>มีโปรโมชั่น</button>
                     </div>
                 </div>
                 {havePromotion &&
                     <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center">
                         <div className="flex flex-col items-start justify-center w-full max-w-5/6 mb-4">
                             <label htmlFor="promotion_quantity" className="mb-2">จำนวนที่จะจัดโปรโมชั่น</label>
-                            <input type="text" id="promotion_quantity" placeholder="quantity" value={promotionQuantity} onChange={e => setPromotionQuantity(e.target.value)} className="input w-full" required />
+                            <input type="text" id="promotion_quantity" placeholder="quantity" value={promotionQuantity} onChange={e => setPromotionQuantity(e.target.value)} className="input w-full" autoFocus required />
                         </div>
                         <div className="flex flex-col items-start justify-center w-full max-w-5/6 mb-4">
                             <label htmlFor="promotion_price" className="mb-2">ราคาโปรโมชั่น</label>
