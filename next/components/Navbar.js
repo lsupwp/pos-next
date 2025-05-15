@@ -24,6 +24,7 @@ const Navbar = () => {
                     <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                         <li><Link href="/products">ดูรายการสินค้า</Link></li>
                         <li><Link href="/products/add-product">เพิ่มสินค้า</Link></li>
+                        <li><Link href="/sales-schedule">กำไรต่อวัน</Link></li>
                     </ul>
                 </details>
             </div>
